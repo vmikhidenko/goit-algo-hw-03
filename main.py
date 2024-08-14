@@ -4,7 +4,7 @@ from address_book import AddressBook
 from record import Record
 from fields import DATE_FORMAT
 from data_saver import data_saver
-from notebook import add_note_command, edit_note_command, delete_note_command, find_note_command, show_all_notes_command
+from notebook import add_note_command, add_tags_command, edit_note_command, delete_note_command, find_note_by_tag_command, find_note_command, remove_tag_command, show_all_notes_command, sort_notes_by_tag_command
 from decorators import input_error
 
 @input_error
@@ -301,6 +301,14 @@ def main():
       print(add_email(args, book))
     elif command == "add-address":
       print(add_address(args, book))
+    elif command == 'add-tags':
+      print(add_tags_command(args, notebook))
+    elif command == 'sort-notes-by-tag':
+      print(sort_notes_by_tag_command(args, notebook))
+    elif command == 'find-note-by-tag':
+        print(find_note_by_tag_command(args, notebook))
+    elif command == 'remove-tag':
+      print(remove_tag_command(args, notebook))
     else:
       print("Invalid command.")
 

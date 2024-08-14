@@ -1,5 +1,5 @@
 from datetime import datetime
-from fields import Birthday, Name, Phone
+from fields import Birthday, Name, Phone, Email, Address
 from fields import DATE_FORMAT
 
 class Record:
@@ -7,6 +7,8 @@ class Record:
     self.name = Name(name)
     self.phones = []
     self.birthday = None
+    self.email = None
+    self.address = None
 
   def add_phone(self, phone: str) -> None:
     phone = phone.strip()
@@ -49,7 +51,19 @@ class Record:
 
   def show_phones(self) -> str:
     return '; '.join(p.value for p in self.phones)
+  
+  def add_email(self, email: str) -> None:
+    self.email = Email(email)
+
+  def get_email(self):
+    return self.email.value if self.email else None
+  
+  def add_address(self, address: str) -> None:
+    address = address.strip()
+    self.address = Address(address)
+
+  def get_address(self):
+    return self.address.value if self.address else None
 
   def __str__(self):
-    return f"Contact name: {self.name.value}, phones: {self.show_phones()}, birthdate: {self.get_birthday() or  'not set'}"
-  
+    return f"Contact name: {self.name.value}, phones: {self.show_phones()}, birthdate: {self.get_birthday() or  'not set'}, email: {self.get_email() or  'not set'}, address: {self.get_address() or  'not set'}"

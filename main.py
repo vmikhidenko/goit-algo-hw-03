@@ -115,9 +115,31 @@ def show_all(book: AddressBook):
     result.append(f"{contact}")
   return "\n".join(result)
 
+@input_error
+def add_email(args, book: AddressBook):
+  name, email = args
+  if not name or not email:
+    raise ValueError('You need to specify name and email')
 
+  existing_contact = book.find(name)
+  if not existing_contact:
+    return f'There is no contact with name {name}'
+  
+  existing_contact.add_email(email)
+  return f'email {email} successfully added to contact {name}'
 
+@input_error
+def add_address(args, book: AddressBook):
+  name, address = args
+  if not name or not address:
+    raise ValueError('You need to specify name and address')
 
+  existing_contact = book.find(name)
+  if not existing_contact:
+    return f'There is no contact with name {name}'
+  
+  existing_contact.add_address(address)
+  return f'address {address} successfully added to contact {name}'
 
 def main():
   print("Welcome to the assistant bot!")
@@ -203,7 +225,7 @@ def main():
   # print(birthdays(book))
 
   while True:
-    user_input = input().strip()
+    user_input = input("Enter a command: ").strip()
     command, *args = parse_input(user_input)
 
     if command in ["close", "exit"]:
@@ -226,6 +248,10 @@ def main():
       print(show_birthday(args, book))
     elif command == "birthdays":
       print(birthdays(book))
+    elif command == "add-email":
+      print(add_email(args, book))
+    elif command == "add-address":
+      print(add_address(args, book))
     else:
       print("Invalid command.")
 

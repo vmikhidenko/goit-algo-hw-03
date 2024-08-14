@@ -4,20 +4,8 @@ from address_book import AddressBook
 from record import Record
 from fields import DATE_FORMAT
 from data_saver import data_saver
-
-
-def input_error(func):
-  def inner(*args, **kwargs):
-    try:
-      return func(*args, **kwargs)
-    except ValueError as ve:
-      return f"Error happened: {ve}"
-    except KeyError:
-      return "Contact does no exist"
-    except IndexError as e:
-      return f"I have no idea where this error can occur in the existing code, but here is the error: {e}"
-
-  return inner
+from notebook import add_note_command, edit_note_command, delete_note_command, find_note_command, show_all_notes_command
+from decorators import input_error
 
 @input_error
 def add_birthday(args, book: AddressBook):
@@ -144,6 +132,7 @@ def add_address(args, book: AddressBook):
 def main():
   print("Welcome to the assistant bot!")
   book = data_saver.load_data()
+  notebook = data_saver.load_notebook()
   
   # testing
   # print('Add contact')
@@ -224,12 +213,62 @@ def main():
   # print('Show future birthday guys')
   # print(birthdays(book))
 
+  # print('Add new note')
+  # args = 'note one', "this is the text of the note"
+  # print(add_note_command(args, notebook))
+  # print()
+
+  # print('Add note that already exists')
+  # args = 'note one', "this is the text of the note"
+  # print(add_note_command(args, notebook))
+  # print()
+
+  # print('Edit note that exists')
+  # args = 'note one', "this is edited text for note one"
+  # print(edit_note_command(args, notebook))
+  # print()
+  
+  # print('Edit note that does not exist')
+  # args = 'note two', "this is edited text for note two"
+  # print(edit_note_command(args, notebook))
+  # print()
+
+  # print('Delete note that exists')
+  # args = 'note one',
+  # print(delete_note_command(args, notebook))
+  # print()
+
+  # print('Delete note that does not exist')
+  # args = 'note two',
+  # print(delete_note_command(args, notebook))
+  # print()
+  
+  # print('Find note by text which exists')
+  # args = 'note one', "this is the text of the note"
+  # print(add_note_command(args, notebook))
+  # args = 'note two', "apchhui"
+  # print(add_note_command(args, notebook))
+  # args = 'note three', "this is sss"
+  # print(add_note_command(args, notebook))
+  # args = 'this iS',
+  # print(find_note_command(args, notebook))
+  # print()
+
+  # print('Find note by text which does not exist')
+  # args = 'asdfsdf',
+  # print(find_note_command(args, notebook))
+  # print()
+
+  # print('Show all notes')
+  # print(show_all_notes_command(notebook))
+
   while True:
     user_input = input("Enter a command: ").strip()
     command, *args = parse_input(user_input)
 
     if command in ["close", "exit"]:
       data_saver.save_data(book)
+      data_saver.save_notebook(notebook)
       print("Good bye!")
       break
     elif command == 'hello':
@@ -248,6 +287,16 @@ def main():
       print(show_birthday(args, book))
     elif command == "birthdays":
       print(birthdays(book))
+    elif command == 'add-note':
+      print(add_note_command(args, notebook))
+    elif command == 'edit-note':
+      print(edit_note_command(args, notebook))
+    elif command == 'delete-note':
+      print(delete_note_command(args, notebook))
+    elif command == 'find-note':
+      print(find_note_command(args, notebook))
+    elif command == 'show-all-notes':
+      print(show_all_notes_command(notebook))
     elif command == "add-email":
       print(add_email(args, book))
     elif command == "add-address":

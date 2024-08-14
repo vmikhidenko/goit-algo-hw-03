@@ -118,16 +118,82 @@ def add_email(args, book: AddressBook):
 
 @input_error
 def add_address(args, book: AddressBook):
-  name, address = args
-  if not name or not address:
-    raise ValueError('You need to specify name and address')
+  if len(args) < 2:
+        raise ValueError('You need to specify name and address')
+  name = args[0]
+  address = ' '.join(args[1:]).strip()
 
   existing_contact = book.find(name)
   if not existing_contact:
     return f'There is no contact with name {name}'
   
   existing_contact.add_address(address)
-  return f'address {address} successfully added to contact {name}'
+  return f'Address {address} successfully added to contact {name}'
+
+@input_error
+def search_contact(args, book: AddressBook):
+  search, *_ = args
+  if not search:
+    raise ValueError('Please enter a search value. It can be a name, phone, email, address, or birthday.')
+  
+  search = search.strip().lower()
+  found_contacts = []
+  for contact in book.data.values():
+    if (search in contact.name.value.lower() or
+            any(search in phone.value for phone in contact.phones) or
+            (contact.email and search in contact.email.value.lower()) or
+            (contact.address and search in contact.address.value.lower()) or
+            (contact.birthday and search in contact.get_birthday())):
+            found_contacts.append(contact)
+  if not found_contacts:
+    return f'No contact found with the search parameter "{search}".'
+
+  return '\n'.join(str(contact) for contact in found_contacts)
+
+def help():
+    print("")
+    print("\thello - Start dialog.")
+    print("")
+    print("\tadd <name> <phone> - Add contact. Require name and phone.")
+    print("")
+    print("\tchange <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.")
+    print("")
+    print("\tphone <name> - Show phone. Require name.")
+    print("")
+    print("\tall - Show all contacts.")
+    print("")
+    print("\tadd-birthday <name> <date of birthday> - Add birthday. Require name and date of birthday.")
+    print("")
+    print("\tshow-birthday <name> - Show birthday. Require name.")
+    print("")
+    print("\tbirthdays - Show birthdays next week.")
+    print("")
+    print("\tadd-note <name> <text> - Add note. Require name and text.")
+    print("")
+    print("\tedit-note <name> <text> - Edit note. Require name and text.")
+    print("")
+    print("\tdelete-note <name> - Delete note. Require name.")
+    print("")
+    print("\tfind-note <text> - Find note. Require text.")
+    print("")
+    print("\tshow-all-notes - Show all notes.")
+    print("")
+    print("\tadd-email <name> <address>- Add email. Require name and email.")
+    print("")
+    print("\tadd-address <name> <address> - Add address. Require name and address.")
+    print("")
+    print("\tadd-tags <name> <tag> - Add tags. Require name and at least one tag.")
+    print("")
+    print("\tsort-notes-by-tag <tag> - Sort notes by tag. Require tag.")
+    print("")
+    print("\tfind-note-by-tag <tag> - Find note by tag. Require tag.")
+    print("")
+    print("\tremove-tag <tag> - Remove tag. Require tag.")
+    print("")
+    print("\tsearch <value> - Search contact by name, phone, email, address, or birthday. Require value.")
+    print("")
+    print("\texit or close - Exit.")
+    print("")
 
 def main():
   print("Welcome to the assistant bot!")
@@ -309,6 +375,10 @@ def main():
         print(find_note_by_tag_command(args, notebook))
     elif command == 'remove-tag':
       print(remove_tag_command(args, notebook))
+    elif command == 'search':
+      print(search_contact(args, book))
+    elif command == "help" or "-h":
+      help()
     else:
       print("Invalid command.")
 

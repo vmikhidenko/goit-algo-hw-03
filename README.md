@@ -34,7 +34,8 @@ This is an assistant bot that allows you to manage contacts and notes. It offers
    ```bash
    pip install -r requirements.txt
 4. In order to install the bot run a command from terminal command line: 
-```bash pip install -e .
+    ```bash 
+    pip install -e .
 
 Commands
 Contact Management

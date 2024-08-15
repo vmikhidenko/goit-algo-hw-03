@@ -203,6 +203,10 @@ def help():
     print("\texit or close - Exit.")
     print("")
 
+def exit_program():
+    data_manager.save_all_unsaved_data()
+    print("Good bye!")
+
 def main():
   print("Welcome to the assistant bot!")
   book = data_manager.load_data(const.ADDRESS_BOOK_STORAGE_ID)
@@ -336,17 +340,12 @@ def main():
   # print('Show all notes')
   # print(show_all_notes_command(notebook))
 
-  def save_data():
-    data_manager.save_data(const.ADDRESS_BOOK_STORAGE_ID, book)
-    data_manager.save_data(const.NOTEBOOK_STORAGE_ID, notebook)
-
   while True:
     user_input = input("Enter a command: ").strip()
     command, *args = parse_input(user_input)
 
     if command in ["close", "exit"]:
-      save_data()
-      print("Good bye!")
+      exit_program()
       break
     elif command == 'hello':
       print('How can I help you?')

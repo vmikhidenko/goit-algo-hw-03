@@ -1,11 +1,19 @@
 from datetime import datetime
 
 from address_book import AddressBook
+from notebook import Notebook
 from record import Record
 from fields import DATE_FORMAT
-from data_saver import data_saver
+from data_manager import DataManager
+import constants as const
 from notebook import add_note_command, add_tags_command, edit_note_command, delete_note_command, find_note_by_tag_command, find_note_command, remove_tag_command, show_all_notes_command, sort_notes_by_tag_command
 from decorators import input_error
+
+
+data_manager = DataManager()
+data_manager.add_storage(const.ADDRESS_BOOK_STORAGE_ID, const.ADDRESS_BOOK_FILE, AddressBook)
+data_manager.add_storage(const.NOTEBOOK_STORAGE_ID, const.NOTEBOOK_FILE, Notebook)
+
 
 @input_error
 def add_birthday(args, book: AddressBook):
@@ -81,6 +89,20 @@ def change_contact(args, book: AddressBook):
   
   existing_contact.edit_phone(old_phone, new_phone)
   return f"Old phone {old_phone} was replaced by new phone {new_phone} for contact {existing_contact.name}."
+
+
+@input_error
+def delete_contact(args, book: AddressBook):
+    name, *_ = args
+    if not name:
+        raise ValueError('To delete contact specify: <name>')
+
+    existing_contact = book.find(name)
+    if not existing_contact:
+        return f"Contact with name \"{name}\" does not exist"
+
+    book.delete(name)
+    return f"Contact with name \"{name}\" successfully deleted"
 
 @input_error
 def show_phone(args, book: AddressBook):
@@ -158,6 +180,8 @@ def help():
     print("")
     print("\tchange <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.")
     print("")
+    print("\tdelete or remove <name> - Remove contact by name out from the addressbook. Require name.")
+    print("")
     print("\tphone <name> - Show phone. Require name.")
     print("")
     print("\tall - Show all contacts.")
@@ -195,10 +219,14 @@ def help():
     print("\texit or close - Exit.")
     print("")
 
+def exit_program():
+    data_manager.save_all_unsaved_data()
+    print("Good bye!")
+
 def main():
   print("Welcome to the assistant bot!")
-  book = data_saver.load_data()
-  notebook = data_saver.load_notebook()
+  book = data_manager.load_data(const.ADDRESS_BOOK_STORAGE_ID)
+  notebook = data_manager.load_data(const.NOTEBOOK_STORAGE_ID)
   
   # testing
   # print('Add contact')
@@ -333,9 +361,7 @@ def main():
     command, *args = parse_input(user_input)
 
     if command in ["close", "exit"]:
-      data_saver.save_data(book)
-      data_saver.save_notebook(notebook)
-      print("Good bye!")
+      exit_program()
       break
     elif command == 'hello':
       print('How can I help you?')
@@ -343,6 +369,8 @@ def main():
       print(add_contact(args, book))
     elif command == 'change':
       print(change_contact(args, book))
+    elif command in ["delete", "remove"]:
+      print(delete_contact(args, book))
     elif command == 'phone':
       print(show_phone(args, book))
     elif command == 'all':

@@ -1,11 +1,19 @@
 from datetime import datetime
 
 from address_book import AddressBook
+from notebook import Notebook
 from record import Record
 from fields import DATE_FORMAT
-from data_saver import data_saver
+from data_manager import DataManager
+import constants as const
 from notebook import add_note_command, add_tags_command, edit_note_command, delete_note_command, find_note_by_tag_command, find_note_command, remove_tag_command, show_all_notes_command, sort_notes_by_tag_command
 from decorators import input_error
+
+
+data_manager = DataManager()
+data_manager.add_storage(const.ADDRESS_BOOK_STORAGE_ID, const.ADDRESS_BOOK_FILE, AddressBook)
+data_manager.add_storage(const.NOTEBOOK_STORAGE_ID, const.NOTEBOOK_FILE, Notebook)
+
 
 @input_error
 def add_birthday(args, book: AddressBook):
@@ -197,8 +205,8 @@ def help():
 
 def main():
   print("Welcome to the assistant bot!")
-  book = data_saver.load_data()
-  notebook = data_saver.load_notebook()
+  book = data_manager.load_data(const.ADDRESS_BOOK_STORAGE_ID)
+  notebook = data_manager.load_data(const.NOTEBOOK_STORAGE_ID)
   
   # testing
   # print('Add contact')
@@ -328,13 +336,16 @@ def main():
   # print('Show all notes')
   # print(show_all_notes_command(notebook))
 
+  def save_data():
+    data_manager.save_data(const.ADDRESS_BOOK_STORAGE_ID, book)
+    data_manager.save_data(const.NOTEBOOK_STORAGE_ID, notebook)
+
   while True:
     user_input = input("Enter a command: ").strip()
     command, *args = parse_input(user_input)
 
     if command in ["close", "exit"]:
-      data_saver.save_data(book)
-      data_saver.save_notebook(notebook)
+      save_data()
       print("Good bye!")
       break
     elif command == 'hello':

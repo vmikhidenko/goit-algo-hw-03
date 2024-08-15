@@ -180,7 +180,7 @@ def help():
     print("")
     print("\tchange <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.")
     print("")
-    print("\tdelete or remove <name> - Remove contact by name out of the addressbook. Require name.")
+    print("\tdelete or remove <name> - Remove contact by name out from the addressbook. Require name.")
     print("")
     print("\tphone <name> - Show phone. Require name.")
     print("")

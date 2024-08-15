@@ -90,6 +90,20 @@ def change_contact(args, book: AddressBook):
   existing_contact.edit_phone(old_phone, new_phone)
   return f"Old phone {old_phone} was replaced by new phone {new_phone} for contact {existing_contact.name}."
 
+
+@input_error
+def delete_contact(args, book: AddressBook):
+    name, *_ = args
+    if not name:
+        raise ValueError('To delete contact specify: <name>')
+
+    existing_contact = book.find(name)
+    if not existing_contact:
+        return f"Contact with name \"{name}\" does not exist"
+
+    book.delete(name)
+    return f"Contact with name \"{name}\" successfully deleted"
+
 @input_error
 def show_phone(args, book: AddressBook):
   name, *_ = args
@@ -165,6 +179,8 @@ def help():
     print("\tadd <name> <phone> - Add contact. Require name and phone.")
     print("")
     print("\tchange <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.")
+    print("")
+    print("\tdelete or remove <name> - Remove contact by name out of the addressbook. Require name.")
     print("")
     print("\tphone <name> - Show phone. Require name.")
     print("")
@@ -353,6 +369,8 @@ def main():
       print(add_contact(args, book))
     elif command == 'change':
       print(change_contact(args, book))
+    elif command in ["delete", "remove"]:
+      print(delete_contact(args, book))
     elif command == 'phone':
       print(show_phone(args, book))
     elif command == 'all':

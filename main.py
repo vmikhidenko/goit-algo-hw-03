@@ -193,51 +193,52 @@ def search_contact(args, book: AddressBook):
     return '\n'.join(str(contact) for contact in found_contacts)
 
 def help():
-    print("")
-    print("\thello - Start dialog.")
-    print("")
-    print("\tadd <name> <phone> - Add contact. Require name and phone.")
-    print("")
-    print("\tchange <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.")
-    print("")
-    print("\tdelete or remove <name> - Remove contact by name out from the addressbook. Require name.")
-    print("")
-    print("\tphone <name> - Show phone. Require name.")
-    print("")
-    print("\tall - Show all contacts.")
-    print("")
-    print("\tadd-birthday <name> <date of birthday> - Add birthday. Require name and date of birthday.")
-    print("")
-    print("\tshow-birthday <name> - Show birthday. Require name.")
-    print("")
-    print("\tbirthdays - Show birthdays next week.")
-    print("")
-    print("\tadd-note <name> <text> - Add note. Require name and text.")
-    print("")
-    print("\tedit-note <name> <text> - Edit note. Require name and text.")
-    print("")
-    print("\tdelete-note <name> - Delete note. Require name.")
-    print("")
-    print("\tfind-note <text> - Find note. Require text.")
-    print("")
-    print("\tshow-all-notes - Show all notes.")
-    print("")
-    print("\tadd-email <name> <address>- Add email. Require name and email.")
-    print("")
-    print("\tadd-address <name> <address> - Add address. Require name and address.")
-    print("")
-    print("\tadd-tags <name> <tag> - Add tags. Require name and at least one tag.")
-    print("")
-    print("\tsort-notes-by-tag <tag> - Sort notes by tag. Require tag.")
-    print("")
-    print("\tfind-note-by-tag <tag> - Find note by tag. Require tag.")
-    print("")
-    print("\tremove-tag <tag> - Remove tag. Require tag.")
-    print("")
-    print("\thelp - Show this help.")
-    print("")
-    print("\texit or close - Exit the program.")
-    print("")
+    help_text = """
+    hello - Start dialog.
+
+    add <name> <phone> - Add contact. Require name and phone.
+
+    change <name> <old phone> <new phone> - Change contact. Require name, old phone and new phone.
+
+    delete or remove <name> - Remove contact by name out from the addressbook. Require name.
+
+    phone <name> - Show phone. Require name.
+
+    all - Show all contacts.
+
+    add-birthday <name> <date of birthday> - Add birthday. Require name and date of birthday.
+
+    show-birthday <name> - Show birthday. Require name.
+
+    birthdays - Show birthdays next week.
+
+    add-note <name> <text> - Add note. Require name and text.
+
+    edit-note <name> <text> - Edit note. Require name and text.
+
+    delete-note <name> - Delete note. Require name.
+
+    find-note <text> - Find note. Require text.
+
+    show-all-notes - Show all notes.
+
+    add-email <name> <address> - Add email. Require name and email.
+
+    add-address <name> <address> - Add address. Require name and address.
+
+    add-tags <name> <tag> - Add tags. Require name and at least one tag.
+
+    sort-notes-by-tag <tag> - Sort notes by tag. Require tag.
+
+    find-note-by-tag <tag> - Find note by tag. Require tag.
+
+    remove-tag <tag> - Remove tag. Require tag.
+
+    help - Show this help.
+
+    exit or close - Exit the program.
+    """
+    print(help_text)
 
 def exit_program():
     data_manager.save_all_unsaved_data()

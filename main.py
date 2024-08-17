@@ -343,7 +343,6 @@ def exit_program():
     Save all unsaved data and exit the program.
     """
     data_manager.save_all_unsaved_data()
-    print("Good bye!")
 
 def main():
     """

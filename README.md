@@ -63,7 +63,7 @@ This is an assistant bot that allows you to manage contacts and notes. It offers
 - `add-tags <title> <tag>`: Add tags to an existing note.
 - `sort-notes-by-tag <tag>`: Sort notes by a specific tag.
 - `find-note-by-tag <tag>`: Find notes that have the specified tag.
-- `remove-tag <tag>`: Remove a tag from all notes.
+- `remove-tag <name ><tag>`: Remove a tag from all notes.
 
 #### Utility Commands
 

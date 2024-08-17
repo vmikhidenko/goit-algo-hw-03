@@ -26,12 +26,22 @@ commands = [
 # Create a WordCompleter for command autocompletion
 command_completer = WordCompleter(commands, ignore_case=True)
 
+# Initialize the data manager and add storage for the address book and notebook
 data_manager = DataManager()
 data_manager.add_storage(const.ADDRESS_BOOK_STORAGE_ID, const.ADDRESS_BOOK_FILE, AddressBook)
 data_manager.add_storage(const.NOTEBOOK_STORAGE_ID, const.NOTEBOOK_FILE, Notebook)
 
+# Decorator function to handle errors in the command functions
 @input_error
 def add_birthday(args, book: AddressBook):
+    """
+    Add a birthday to an existing contact.
+    Args:
+        args (list): Name and birthdate of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message or error message.
+    """
     name, birthdate = args
     if not name or not birthdate:
         raise ValueError('You need to specify name and birthdate')
@@ -46,6 +56,14 @@ def add_birthday(args, book: AddressBook):
 
 @input_error
 def show_birthday(args, book: AddressBook):
+    """
+    Show the birthday of a contact.
+    Args:
+        args (list): Name of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: The birthday of the contact or an error message.
+    """
     name, *_ = args
     if not name:
         raise ValueError('You need to specify name')
@@ -69,6 +87,13 @@ def show_birthday(args, book: AddressBook):
 
 @input_error
 def birthdays(book: AddressBook):
+    """
+    Show contacts with upcoming birthdays.
+    Args:
+        book (AddressBook): The address book where the contacts are stored.
+    Returns:
+        str: A list of contacts with upcoming birthdays or a message if none.
+    """
     upcoming_birthdays = book.get_upcoming_birthdays()
     if len(upcoming_birthdays) == 0:
         return 'No contacts with upcoming birthdays'
@@ -80,12 +105,27 @@ def birthdays(book: AddressBook):
     return '\n'.join(result_strings)
 
 def parse_input(user_input: str):
+    """
+    Parse the user input into a command and arguments.
+    Args:
+        user_input (str): The raw input from the user.
+    Returns:
+        tuple: The command and its arguments.
+    """
     command, *args = user_input.split()
     command = command.strip().lower()
     return command, *args
 
 @input_error
 def add_contact(args, book: AddressBook) -> None:
+    """
+    Add a new contact or update an existing contact's phone number.
+    Args:
+        args (list): Name and phone number of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message.
+    """
     name, phone, *_ = args
     record = book.find(name)
     
@@ -100,6 +140,14 @@ def add_contact(args, book: AddressBook) -> None:
 
 @input_error
 def change_contact(args, book: AddressBook):
+    """
+    Change a contact's phone number.
+    Args:
+        args (list): Name, old phone number, and new phone number.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message or error message.
+    """
     name, old_phone, new_phone = args
     if not name or not old_phone or not new_phone:
         raise ValueError('To change contact specify: <name>, <old_phone>, <new_phone>')
@@ -113,6 +161,14 @@ def change_contact(args, book: AddressBook):
 
 @input_error
 def delete_contact(args, book: AddressBook):
+    """
+    Delete a contact from the address book.
+    Args:
+        args (list): Name of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message or error message.
+    """
     name, *_ = args
     if not name:
         raise ValueError('To delete contact specify: <name>')
@@ -126,19 +182,34 @@ def delete_contact(args, book: AddressBook):
 
 @input_error
 def show_phone(args, book: AddressBook):
+    """
+    Show the phone number(s) of a contact.
+    Args:
+        args (list): Name of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: The contact's phone number(s) or an error message.
+    """
     name, *_ = args
     if not name:
         raise ValueError('Please enter contact name')
     
     contact = book.find(name)
     if not contact:
-        return f'There is not contact with name {name}'
+        return f'There is no contact with name {name}'
     
     return contact.show_phones()
 
 def show_all(book: AddressBook):
+    """
+    Show all contacts in the address book.
+    Args:
+        book (AddressBook): The address book to display.
+    Returns:
+        str: A formatted list of all contacts.
+    """
     if not book.data.keys():
-        return "There is no contacts in the list"
+        return "There are no contacts in the list"
     
     result = []
     for contact in book.data.values():
@@ -147,6 +218,14 @@ def show_all(book: AddressBook):
 
 @input_error
 def add_email(args, book: AddressBook):
+    """
+    Add an email address to an existing contact.
+    Args:
+        args (list): Name and email address of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message or error message.
+    """
     name, email = args
     if not name or not email:
         raise ValueError('You need to specify name and email')
@@ -156,10 +235,18 @@ def add_email(args, book: AddressBook):
         return f'There is no contact with name {name}'
     
     existing_contact.add_email(email)
-    return f'email {email} successfully added to contact {name}'
+    return f'Email {email} successfully added to contact {name}'
 
 @input_error
 def add_address(args, book: AddressBook):
+    """
+    Add an address to an existing contact.
+    Args:
+        args (list): Name and address of the contact.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: Confirmation message or error message.
+    """
     if len(args) < 2:
         raise ValueError('You need to specify name and address')
     name = args[0]
@@ -174,6 +261,14 @@ def add_address(args, book: AddressBook):
 
 @input_error
 def search_contact(args, book: AddressBook):
+    """
+    Search for a contact by name, phone, email, address, or birthday.
+    Args:
+        args (list): Search term.
+        book (AddressBook): The address book where the contact is stored.
+    Returns:
+        str: A list of matching contacts or a message if none found.
+    """
     search, *_ = args
     if not search:
         raise ValueError('Please enter a search value. It can be a name, phone, email, address, or birthday.')
@@ -193,6 +288,9 @@ def search_contact(args, book: AddressBook):
     return '\n'.join(str(contact) for contact in found_contacts)
 
 def help():
+    """
+    Display the help menu with available commands and their usage.
+    """
     help_text = """
     hello - Start dialog.
 
@@ -241,10 +339,17 @@ def help():
     print(help_text)
 
 def exit_program():
+    """
+    Save all unsaved data and exit the program.
+    """
     data_manager.save_all_unsaved_data()
     print("Good bye!")
 
 def main():
+    """
+    Main function to start the assistant bot.
+    Initializes the address book and notebook, then enters the command loop.
+    """
     print("Welcome to the assistant bot!")
     book = data_manager.load_data(const.ADDRESS_BOOK_STORAGE_ID)
     notebook = data_manager.load_data(const.NOTEBOOK_STORAGE_ID)

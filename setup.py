@@ -8,10 +8,5 @@ setup(
         'prompt_toolkit==3.0.47',
         'setuptools==72.2.0',
         'wcwidth==0.2.13'
-    ],
-    entry_points={
-        'console_scripts': [
-            'dreamteam=project_DreamTeam15.module_name:function_name',
-        ],
-    },
+    ]
 )
